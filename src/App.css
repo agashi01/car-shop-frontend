@@ -798,6 +798,10 @@ input[type="checkbox"] {
   justify-content: flex-end;
 }
 
+.buying-guest{
+  justify-content: flex-start;
+}
+
 .arrows {
   height: 52px;
   cursor: pointer;

@@ -882,7 +882,7 @@ function Home({ auth, guest, id, dealer, username }) {
               </div>
             </div>
           ) : guest ? (
-            <div className="scroll-bottom buying">
+            <div className="scroll-bottom buying-gueset">
               <div onClick={scroll("bottom")} className="arrows">
                 <div className="arrow"></div>
                 <div className="arrow"></div>
