@@ -38,9 +38,7 @@ export default function App() {
 
         const token = localStorage.getItem('token')
 
-        if (!token) { // if not logged in
-            navigate("Sign-in");
-        } else {
+        if (token) { // if not logged in
             axiosInstance.post('/log-in-token', { token })
                 .then(res => {
                     setDealer(res.data?.type);

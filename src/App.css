@@ -1311,6 +1311,7 @@ In {
 }
 
 .add-error {
+  margin-top: 0px;
   color: red;
   font-size: 0.9em;
 }
