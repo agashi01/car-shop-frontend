@@ -36,6 +36,9 @@ export default function Add({ id }) {
   const [modelValue, setModelValue] = useState("");
   const [unavailable, setUnavailable] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+  const [toMuchTime,setToMuchTime]=useState(false)
+  const [errorClassName,setErrorClassName]=useState('')
 
   const axiosInstance = useAxiosInstance();
   const navigate = useNavigate()
@@ -66,11 +69,13 @@ export default function Add({ id }) {
 
   useEffect(() => {
     if (divRef.current) {
+      setIsReady(true)
       setMaxWidth(divRef.current.offsetWidth)
     }
 
     const handleSize = () => {
       if (divRef.current) {
+        setIsReady(true)
         setMaxWidth(divRef.current.offsetWidth)
       }
     }
@@ -176,6 +181,9 @@ export default function Add({ id }) {
 
     setUnavailable(true);
     setLoading(true);
+    const timeout=setTimeout(() => {
+      setToMuchTime(true)
+    }, 5000)
 
     axiosInstance
       .post("/cars", formdata, {
@@ -184,17 +192,24 @@ export default function Add({ id }) {
         },
       })
       .then(() => {
+        clearTimeout(timeout)
+        setToMuchTime(false)
         setLoading(false);
         setUnavailable(false);
         navigate("/After-add");
       })
       .catch((err) => {
+        clearTimeout(timeout)
+        setToMuchTime(false)
         setLoading(false);
-        setUnavailable(false);
-        console.log(err,'hi');
+        console.log(err, 'hi');
         if (typeof err.response.data !== 'string') {
           setErrorMessage('Problems in te server')
+          setUnavailable(false);
+          setErrorClassName('add-error')
         }
+        setTimeout(()=>setUnavailable(false),3000)
+        setErrorClassName('add-error warning')
         setErrorMessage(err.response.data);
       });
   }, [message]);
@@ -258,7 +273,8 @@ export default function Add({ id }) {
     setCurrentImageIndex(0);
   };
 
-  const closeModal = () => {
+  const closeModal = (e) => {
+    e.stopPropagation()
     setCurrentImageIndex(null);
   };
 
@@ -423,9 +439,9 @@ export default function Add({ id }) {
               )}
             </div>
           </div>
-          {errorMessage && (
+          {(errorMessage && isReady) && (
             <div>
-              <p style={{ maxWidth: `${maxWidth - 50}px` }} className="add-error">{errorMessage}</p>
+              <p style={{ maxWidth: `${maxWidth - 50}px` }} className={errorClassName}>{errorMessage}</p>
             </div>
           )}
           <button
@@ -445,8 +461,9 @@ export default function Add({ id }) {
         {loading && (
           <div className="modal">
             <div className="loading-div">
-              <div>Please wait...</div>
+              {toMuchTime ? <div>Sorry, this is taking longer than usual...</div> : <div>Please wait...</div>}
               <div className="loading"></div>
+
             </div>
           </div>
         )}
@@ -461,13 +478,14 @@ export default function Add({ id }) {
               </div>
               <div className="image-div">
                 <img
+                  style={{ overflow: "hidden" }}
                   src={URL.createObjectURL(file[currentImageIndex])}
                   alt="Preview"
                 />
               </div>
               <div className="modal-navigation">
-                <button onClick={prevImage}>&lt;</button>
-                <button onClick={nextImage}>&gt;</button>
+                <button style={{fontSize:"24px"}} onClick={prevImage}>&lt;</button>
+                <button style={{fontSize:"24px"}} onClick={nextImage}>&gt;</button>
               </div>
             </div>
           </div>

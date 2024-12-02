@@ -135,6 +135,7 @@ export default function App() {
                             id={id}
                             logo3={Logo}
                             username={username}
+                           
                         />
                     }
                 ></Route>

@@ -19,7 +19,8 @@ export default function AfterAdd() {
           className="btn2"
           onClick={(e) => {
             e.preventDefault();
-            navigate("/");
+            navigate("/")
+
           }}
         >
           Home

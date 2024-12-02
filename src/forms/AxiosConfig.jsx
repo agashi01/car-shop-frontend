@@ -45,9 +45,7 @@ export const axiosInstance = () => {
       async (error) => {
         const original = error.config;
         const errMessage = error.response?.data;
-        console.log(error.config)
         if(errMessage.success===false){
-          console.log(errMessage)
           setAuthMessage('Something went wrong, please refresh the page and log in again');
           throw new axios.Cancel('request canceled because of the big Error')
         }

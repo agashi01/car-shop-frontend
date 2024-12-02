@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { axiosInstance as useAxiosInstance } from "./AxiosConfig";
 
 // eslint-disable-next-line react/prop-types
-function Home({ auth, guest, id, dealer, username }) {
+function Home({ refreshPage, auth, guest, id, dealer, username }) {
   const [vehicleInput, setVehicleInput] = useState([]);
   const [modelInput, setModelInput] = useState([]);
   const [vehicleList, setVehicleList] = useState([]);
@@ -20,7 +20,6 @@ function Home({ auth, guest, id, dealer, username }) {
   const [isHovered, setIsHovered] = useState(false);
   const [limit] = useState(2);
   const [pageNumber, setPageNumber] = useState(1);
-  const account = useRef(null);
   const [modelClass, setModelClass] = useState(false);
   const [deletMarket, setDeletMarket] = useState(false);
   const [deletSold, setDeletSold] = useState(false);
@@ -28,16 +27,23 @@ function Home({ auth, guest, id, dealer, username }) {
   const [removeId, setRemoveId] = useState(null);
   const [end, setEnd] = useState(false);
   const [num, setNum] = useState(0);
-  const [checkboxStates, setCheckboxStates] = useState(()=>{
-    if(localStorage.getItem('checkboxStates')){
+  const [counter, setCounter] = useState(0)
+  const [image, setImage] = useState(null)
+  const [imagesLength, setImagesLength] = useState(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(null)
+  const [outOfStockMessage, setOutOfStockMessage] = useState(false)
+
+  const account = useRef(null);
+
+  const [checkboxStates, setCheckboxStates] = useState(() => {
+    if (localStorage.getItem('checkboxStates')) {
       return JSON.parse(localStorage.getItem('checkboxStates'))
     }
-    return {selling:false,sold:false,owned:false,inStock:false,outOfStock:false}	
+    return { selling: false, sold: false, owned: false, inStock: false, outOfStock: false }
 
   })
 
   useEffect(() => {
-    console.log('checkboc', checkboxStates)
     localStorage.setItem('checkboxStates', JSON.stringify(checkboxStates))
   }, [checkboxStates])
 
@@ -52,7 +58,7 @@ function Home({ auth, guest, id, dealer, username }) {
   const burgerRef = useRef();
 
   useEffect(() => {
-    if (deletMarket || deletSold || isit) {
+    if (deletMarket || deletSold || isit || image) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
@@ -62,7 +68,7 @@ function Home({ auth, guest, id, dealer, username }) {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [deletMarket, deletSold, isit]);
+  }, [deletMarket, deletSold, isit, image]);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -72,15 +78,36 @@ function Home({ auth, guest, id, dealer, username }) {
     setIsHovered(false);
   };
 
+  // useEffect(() => {
+  //   if (!bigImage.current) return;
+
+  //   const containerWidth = bigImage.current.offsetWidth;
+  //   const containerHeight = bigImage.current.offsetHeight;
+
+  //   const scaledWidth = image.width * (containerWidth / image.width);
+  //   const scaledHeight = image.height * (containerHeight / image.height);
+
+  //   const dimensions = [scaledHeight, scaledWidth]
+  //   console.log(dimensions)
+  //   setImageDimensions(dimensions);
+
+  // }, [bigImage, image])
 
   useEffect(() => {
     setRemoveId(carId);
-    axiosInstance
-      .delete("/cars", { params: { id: carId } })
-      .then((res) => {
-        setRemoveId(carId);
-        console.log(res);
-      })
+    if (carId) {
+      axiosInstance
+        .delete("/cars", { params: { id: carId } })
+        .then(() => {
+          setRemoveId(carId);
+        })
+    } else {
+      if (counter < 2) {
+        setCounter(counter + 1)
+        setDeletSold(!deletSold)
+      }
+    }
+
 
 
   }, [deletSold])
@@ -369,7 +396,13 @@ function Home({ auth, guest, id, dealer, username }) {
     });
   };
 
-  const closeModal = () => {
+  const closeModal = (e) => {
+    e.stopPropagation()
+    setOutOfStockMessage(false)
+    setCurrentImageIndex(null)
+    setImagesLength(null)
+    setCarId(null)
+    setImage(null)
     setDeletMarket(false)
     setDeletSold(false)
   }
@@ -381,8 +414,55 @@ function Home({ auth, guest, id, dealer, username }) {
 
   }
 
+  const prevImage = () => {
+    console.log(currentImageIndex, image.src)
+    const prev = (currentImageIndex + imagesLength - 1) % imagesLength
+    setCurrentImageIndex(prev)
+  }
+
+  const nextImage = () => {
+    const next = (currentImageIndex + 1) % imagesLength
+    setCurrentImageIndex(next)
+  }
+
   return (
     <div className="complet">
+      {true &&
+        <div className='modal' onClick={closeModal}>
+        <div className="isit remove-card" onClick={e => e.stopPropagation()}>
+          <p className="isit-first">Unfortunately, this car is out of stock!</p>
+          <div style={{ display: "flex", justifyContent: "center", gap: "5px" }}>
+            <button type="btn" className="btn2" onClick={marketDelete}>
+              Ok
+            </button>
+          </div>
+        </div>
+      </div>
+      }
+      {image != null && (
+        <div className='modal' onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="close-div">
+              <span className="close" onClick={closeModal}>
+                &times;
+              </span>
+            </div>
+            <div className="image-div" >
+              <img
+                style={{
+                  overflow: "hidden",
+                }}
+                src={image.src}
+                alt="Preview"
+              />
+            </div>
+            <div className="modal-navigation">
+              <button className="next" onClick={prevImage}>&lt;</button>
+              <button className="next" onClick={nextImage}>&gt;</button>
+            </div>
+          </div>
+        </div>
+      )}
       {deletMarket && (
         <div className='modal' onClick={closeModal}>
           <div className="isit remove-card" onClick={e => e.stopPropagation()}>
@@ -825,7 +905,7 @@ function Home({ auth, guest, id, dealer, username }) {
                 {/* Input field for 'myCars' */}
                 <div className="input-group">
                   <label>
-                      Owned
+                    Owned
                     <input
                       type="checkbox"
                       checked={checkboxStates.owned}
@@ -899,14 +979,21 @@ function Home({ auth, guest, id, dealer, username }) {
                 // eslint-disable-next-line react/jsx-key
                 <li key={car.id}>
                   <CarCard
+                    outOfStockMessage={setOutOfStockMessage}
+                    setImagesLength={setImagesLength}
+                    currentImageIndex={currentImageIndex}
+                    setCurrentImageIndex={setCurrentImageIndex}
+                    image={setImage}
                     removeId={removeId}
-                    carId={setCarId}
+                    carId={carId}
+                    setCarId={setCarId}
                     deletMarket={setDeletMarket}
                     deletSold={setDeletSold}
                     id={id}
                     isit={setIsit}
                     guest={guest}
                     car={car}
+                    refreshPage={refreshPage}
                   />
                 </li>
               );
