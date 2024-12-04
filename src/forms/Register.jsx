@@ -544,6 +544,7 @@ export default function Register() {
           <div className="next-to-select">
             <label htmlFor="user-type"></label>
             <select
+            style={{cursor:'pointer'}}
               onChange={(e) => setType(e.target.value)}
               className="select"
               name="user-type"

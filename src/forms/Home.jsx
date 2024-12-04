@@ -18,7 +18,7 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
   const [menu, setMenu] = useState("menu-hidden");
   const [cars, setCars] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
-  const [limit] = useState(2);
+  const [limit] = useState(20);
   const [pageNumber, setPageNumber] = useState(1);
   const [modelClass, setModelClass] = useState(false);
   const [deletMarket, setDeletMarket] = useState(false);
@@ -101,8 +101,9 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
       });
     } else {
       if (counter < 2) {
+        console.log('hi')
         setCounter(counter + 1);
-        setDeletSold(!deletSold);
+        setDeletSold(false);
       }
     }
   }, [deletSold]);
@@ -281,19 +282,20 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
       };
       try {
         const res = await axiosInstance.get(url, { params });
-        if(!res.data[1].length){
-          setTimeout(() => {
+        let time;
+        if (!res.data[1].length) {
+          time = setTimeout(() => {
             if (res.data[1].length) {
               setNoCars(false);
-            }else{
-              setNoCars(true)
             }
-          }, 1000)
-        }else{
-          setNoCars(false)
+          }, 3000);
+        } else {
+          setNoCars(false);
         }
-        
-        console.log(res.data[1])
+
+        if(res.data[1].length){
+          clearTimeout(time)
+        }
         setCars(res.data[1]);
         setEnd(res.data[0]);
       } catch (err) {
@@ -395,7 +397,7 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
   };
 
   const scroll = (direction) => () => {
-    console.log('hi')
+    console.log("hi");
     let position = direction === "bottom" ? document.body.scrollHeight : 0;
     window.scrollTo({
       top: position,
@@ -427,21 +429,21 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
   };
 
   const nextImage = () => {
-    console.log(cars)
+    console.log(cars);
     const next = (currentImageIndex + 1) % imagesLength;
     setCurrentImageIndex(next);
   };
-  
-  const changeOwner=(id,ownerId)=>{
-    setCars((current)=>{
-      return current.map((car)=>{
-        if (car.id===id){
-          return {...car,owner_id:ownerId}
+
+  const changeOwner = (id, ownerId) => {
+    setCars((current) => {
+      return current.map((car) => {
+        if (car.id === id) {
+          return { ...car, owner_id: ownerId };
         }
-        return car
-      })
-    })
-  }
+        return car;
+      });
+    });
+  };
 
   return (
     <div className="complet">
@@ -650,122 +652,8 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
         </nav>
       ) : // logged in
 
-        dealer === "Selling" ? (
-          <>
-            <nav className="home">
-              <div className="vehicles-menu">
-                <button ref={vehicleRef} onClick={vehicleMenu} className="vehicle here">
-                  Vehicle
-                </button>
-                <button ref={modelRef} onClick={modelMenu} className="vehicle">
-                  model
-                </button>
-              </div>
-              <div className="home-logo">
-                <img
-                  className={`logo `}
-                  src={carLogo}
-                  alt="logo"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: "50%",
-                    boxShadow: "0px 4px 10px",
-                    transition: "transform 0.2s ease-in-out",
-                    transform: isHovered ? "scale(1.1)" : "scale(1)",
-                  }}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                />
-              </div>
-              <div className="filter">
-                <div ref={vehicleMenuRef} className={vehicleClicked}>
-                  <ul>
-                    <li onClick={all} className="reset-li">
-                      <div className="reset">Select all</div>
-                    </li>
-
-                    {check(vehicleInput) ? (
-                      <li onClick={reset} className="reset-li">
-                        <div className="reset">Reset</div>
-                      </li>
-                    ) : null}
-
-                    {vehicleInput.map((obj) => (
-                      <li key={obj.id} onClick={checked(obj)} className="type-input">
-                        <input
-                          type="checkbox"
-                          className="custom-checkbox"
-                          checked={obj.checked}
-                          id={`input-${obj.make}`}
-                        />
-                        {obj.make}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div ref={modelMenuRef} className={`${modelClicked} ${modelClass ? "custom" : ""}`}>
-                  <ul className="ul">
-                    <li onClick={allModel} className="reset-li">
-                      <div className="reset">Select all</div>
-                    </li>
-                    {check(modelInput) ? (
-                      <li onClick={resetModel} className="reset-li">
-                        <div className="reset">Reset</div>
-                      </li>
-                    ) : null}
-                    {modelInput.map((obj) => {
-                      return (
-                        <li key={obj.id} onClick={checkedM(obj)} className="type-input">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox"
-                            checked={obj.checked}
-                            id={`input-${obj.model}`}
-                          />
-                          {obj.model}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              </div>
-
-              <div ref={account} className="account">
-                <button className="btn-account"></button>
-                <p className="username">{username}</p>
-                <div ref={burgerRef} onClick={burgerMenuFunc} className="burger-menu">
-                  <div className={burgerMenu}></div>
-                  <div className={burgerMenu}></div>
-                  <div className={burgerMenu}></div>
-                </div>
-              </div>
-              <div ref={burgerMenuRef} className={menu}>
-                <div className="help">
-                  <ul className="ul">
-                    <li
-                      onClick={() => {
-                        auth();
-                        navigate("/Register");
-                      }}
-                    >
-                      New account
-                    </li>
-                    <li
-                      onClick={() => {
-                        auth();
-                        navigate("/Sign-in");
-                      }}
-                    >
-                      Sign Out
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </nav>
-          </>
-        ) : (
+      dealer === "Selling" ? (
+        <>
           <nav className="home">
             <div className="vehicles-menu">
               <button ref={vehicleRef} onClick={vehicleMenu} className="vehicle here">
@@ -878,146 +766,261 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
               </div>
             </div>
           </nav>
-        )}
+        </>
+      ) : (
+        <nav className="home">
+          <div className="vehicles-menu">
+            <button ref={vehicleRef} onClick={vehicleMenu} className="vehicle here">
+              Vehicle
+            </button>
+            <button ref={modelRef} onClick={modelMenu} className="vehicle">
+              model
+            </button>
+          </div>
+          <div className="home-logo">
+            <img
+              className={`logo `}
+              src={carLogo}
+              alt="logo"
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "50%",
+                boxShadow: "0px 4px 10px",
+                transition: "transform 0.2s ease-in-out",
+                transform: isHovered ? "scale(1.1)" : "scale(1)",
+              }}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            />
+          </div>
+          <div className="filter">
+            <div ref={vehicleMenuRef} className={vehicleClicked}>
+              <ul>
+                <li onClick={all} className="reset-li">
+                  <div className="reset">Select all</div>
+                </li>
+
+                {check(vehicleInput) ? (
+                  <li onClick={reset} className="reset-li">
+                    <div className="reset">Reset</div>
+                  </li>
+                ) : null}
+
+                {vehicleInput.map((obj) => (
+                  <li key={obj.id} onClick={checked(obj)} className="type-input">
+                    <input
+                      type="checkbox"
+                      className="custom-checkbox"
+                      checked={obj.checked}
+                      id={`input-${obj.make}`}
+                    />
+                    {obj.make}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div ref={modelMenuRef} className={`${modelClicked} ${modelClass ? "custom" : ""}`}>
+              <ul className="ul">
+                <li onClick={allModel} className="reset-li">
+                  <div className="reset">Select all</div>
+                </li>
+                {check(modelInput) ? (
+                  <li onClick={resetModel} className="reset-li">
+                    <div className="reset">Reset</div>
+                  </li>
+                ) : null}
+                {modelInput.map((obj) => {
+                  return (
+                    <li key={obj.id} onClick={checkedM(obj)} className="type-input">
+                      <input
+                        type="checkbox"
+                        className="custom-checkbox"
+                        checked={obj.checked}
+                        id={`input-${obj.model}`}
+                      />
+                      {obj.model}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+
+          <div ref={account} className="account">
+            <button className="btn-account"></button>
+            <p className="username">{username}</p>
+            <div ref={burgerRef} onClick={burgerMenuFunc} className="burger-menu">
+              <div className={burgerMenu}></div>
+              <div className={burgerMenu}></div>
+              <div className={burgerMenu}></div>
+            </div>
+          </div>
+          <div ref={burgerMenuRef} className={menu}>
+            <div className="help">
+              <ul className="ul">
+                <li
+                  onClick={() => {
+                    auth();
+                    navigate("/Register");
+                  }}
+                >
+                  New account
+                </li>
+                <li
+                  onClick={() => {
+                    auth();
+                    navigate("/Sign-in");
+                  }}
+                >
+                  Sign Out
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      )}
       <div className="sell-cars-ul">
         <div className="scroll-menu">
-          { 
-            (dealer === "Selling" ? (
-              <div className="input-row">
-                {/* Input field for 'myCars' */}
-                <div className="input-group">
-                  <label>
-                    My Cars
-                    <input
-                      type="checkbox"
-                      checked={checkboxStates.selling}
-                      onChange={() => toggleCheckbox("selling")}
-                    />
-                  </label>
-                </div>
-
-                {/* Input field for 'sold' */}
-                <div className="input-group">
-                  <label>
-                    Sold
-                    <input
-                      type="checkbox"
-                      checked={checkboxStates.sold}
-                      onChange={() => toggleCheckbox("sold")}
-                    />
-                  </label>
-                </div>
-
-                {/* Input field for 'owned' */}
-                <div className="input-group">
-                  <label>
-                    Owned
-                    <input
-                      type="checkbox"
-                      checked={checkboxStates.owned}
-                      onChange={() => toggleCheckbox("owned")}
-                    />
-                  </label>
-                </div>
-
-                {/* Input field for 'inStock' */}
-                <div className="input-group">
-                  <label>
-                    In Stock
-                    <input
-                      type="checkbox"
-                      checked={checkboxStates.inStock}
-                      onChange={() => toggleCheckbox("inStock")}
-                    />
-                  </label>
-                </div>
-
-                <div className="input-group">
-                  <label>
-                    Out of Stock
-                    <input
-                      type="checkbox"
-                      checked={checkboxStates.outOfStock}
-                      onChange={() => toggleCheckbox("outOfStock")}
-                    />
-                  </label>
-                </div>
+          {dealer === "Selling" ? (
+            <div className="input-row">
+              {/* Input field for 'myCars' */}
+              <div className="input-group">
+                <label>
+                  My Cars
+                  <input
+                    type="checkbox"
+                    checked={checkboxStates.selling}
+                    onChange={() => toggleCheckbox("selling")}
+                  />
+                </label>
               </div>
-            ) : dealer === "Buying" ? (
-              <div className="input-row">
-                {/* Input field for 'myCars' */}
-                <div className="input-group">
-                  <label>
-                    Owned
-                    <input
-                      type="checkbox"
-                      checked={checkboxStates.owned}
-                      onChange={() => toggleCheckbox("owned")}
-                    />
-                  </label>
-                </div>
 
-                {/* Input field for 'sold' */}
-                <div className="input-group">
-                  <label>
-                    In Stock
-                    <input
-                      type="checkbox"
-                      checked={checkboxStates.inStock}
-                      onChange={() => toggleCheckbox("inStock")}
-                    />
-                  </label>
-                </div>
-                <div className="input-group">
-                  <label>
-                    Out of Stock
-                    <input
-                      type="checkbox"
-                      checked={checkboxStates.outOfStock}
-                      onChange={() => toggleCheckbox("outOfStock")}
-                    />
-                  </label>
-                </div>
+              {/* Input field for 'sold' */}
+              <div className="input-group">
+                <label>
+                  Sold
+                  <input
+                    type="checkbox"
+                    checked={checkboxStates.sold}
+                    onChange={() => toggleCheckbox("sold")}
+                  />
+                </label>
               </div>
-            ) : null)}
 
-          {(!noCars && Boolean(cars.length) == true) && (dealer === "Selling" ? (
-            <div className="scroll-bottom">
-              <button
-                onClick={() => navigate("/Add")}
-                className="btn sell ul"
-                style={{ position: "relative" }}
-              >
-                Add a car
-              </button>
-              <div onClick={scroll("bottom")} className="arrows">
-                <div className="arrow"></div>
-                <div className="arrow"></div>
-                <div className="arrow"></div>
+              {/* Input field for 'owned' */}
+              <div className="input-group">
+                <label>
+                  Owned
+                  <input
+                    type="checkbox"
+                    checked={checkboxStates.owned}
+                    onChange={() => toggleCheckbox("owned")}
+                  />
+                </label>
+              </div>
+
+              {/* Input field for 'inStock' */}
+              <div className="input-group">
+                <label>
+                  In Stock
+                  <input
+                    type="checkbox"
+                    checked={checkboxStates.inStock}
+                    onChange={() => toggleCheckbox("inStock")}
+                  />
+                </label>
+              </div>
+
+              <div className="input-group">
+                <label>
+                  Out of Stock
+                  <input
+                    type="checkbox"
+                    checked={checkboxStates.outOfStock}
+                    onChange={() => toggleCheckbox("outOfStock")}
+                  />
+                </label>
               </div>
             </div>
           ) : dealer === "Buying" ? (
-            <div className="scroll-bottom buying">
-              <div onClick={scroll("bottom")} className="arrows">
-                <div className="arrow"></div>
-                <div className="arrow"></div>
-                <div className="arrow"></div>
+            <div className="input-row">
+              {/* Input field for 'myCars' */}
+              <div className="input-group">
+                <label>
+                  Owned
+                  <input
+                    type="checkbox"
+                    checked={checkboxStates.owned}
+                    onChange={() => toggleCheckbox("owned")}
+                  />
+                </label>
+              </div>
+
+              {/* Input field for 'sold' */}
+              <div className="input-group">
+                <label>
+                  In Stock
+                  <input
+                    type="checkbox"
+                    checked={checkboxStates.inStock}
+                    onChange={() => toggleCheckbox("inStock")}
+                  />
+                </label>
+              </div>
+              <div className="input-group">
+                <label>
+                  Out of Stock
+                  <input
+                    type="checkbox"
+                    checked={checkboxStates.outOfStock}
+                    onChange={() => toggleCheckbox("outOfStock")}
+                  />
+                </label>
               </div>
             </div>
-          ) : guest ? (
-            <div className="scroll-bottom buying-gueset">
-              <div onClick={scroll("bottom")} className="arrows">
-                <div className="arrow"></div>
-                <div className="arrow"></div>
-                <div className="arrow"></div>
+          ) : null}
+
+          {!noCars &&
+            Boolean(cars.length) == true &&
+            (dealer === "Selling" ? (
+              <div className="scroll-bottom">
+                <button
+                  onClick={() => navigate("/Add")}
+                  className="btn sell ul"
+                  style={{ position: "relative" }}
+                >
+                  Add a car
+                </button>
+                <div onClick={scroll("bottom")} className="arrows">
+                  <div className="arrow"></div>
+                  <div className="arrow"></div>
+                  <div className="arrow"></div>
+                </div>
               </div>
-            </div>
-          ) : null)}
+            ) : dealer === "Buying" ? (
+              <div className="scroll-bottom buying">
+                <div onClick={scroll("bottom")} className="arrows">
+                  <div className="arrow"></div>
+                  <div className="arrow"></div>
+                  <div className="arrow"></div>
+                </div>
+              </div>
+            ) : guest ? (
+              <div className="scroll-bottom buying-gueset">
+                <div onClick={scroll("bottom")} className="arrows">
+                  <div className="arrow"></div>
+                  <div className="arrow"></div>
+                  <div className="arrow"></div>
+                </div>
+              </div>
+            ) : null)}
         </div>
         {noCars ? (
-          <div style={{alignSelf:'center'}}>Unfortunately there are no cars in stock!</div>
+          <div style={{ alignSelf: "center" }}>Unfortunately there are no cars available!</div>
         ) : !cars.length ? (
-          <div style={{alignSelf:'center'}} className="loading"></div>
+          <div style={{ alignSelf: "center" }} className="loading"></div>
         ) : (
           <div className="cars-page">
             <ul className="cars-ul">
@@ -1027,7 +1030,7 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
                   // eslint-disable-next-line react/jsx-key
                   <li key={car.id}>
                     <CarCard
-                    changeOwner={changeOwner}
+                      changeOwner={changeOwner}
                       outOfStockMessage={setOutOfStockMessage}
                       setImagesLength={setImagesLength}
                       currentImageIndex={currentImageIndex}
@@ -1051,37 +1054,39 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
           </div>
         )}
 
-        {(!noCars && Boolean(cars.length) === true) && (<div className="page">
-          <div className="bottom-middle">
-            <button
-              className={`btn${pageNumber === 1 ? " disabled" : ""}`}
-              onClick={(e) => {
-                scroll("top")(e);
-                setPageNumber(pageNumber - 1);
-              }}
-              disabled={pageNumber === 1}
-            >
-              Previous
-            </button>
-            <span> Page {pageNumber}</span>
-            <button
-              className={`btn${cars.length < limit || end ? " disabled" : ""}`}
-              onClick={(e) => {
-                scroll("top")(e);
-                setPageNumber(pageNumber + 1);
-              }}
-              disabled={cars.length < limit && end}
-            >
-              Next
-            </button>
-          </div>
+        {!noCars && Boolean(cars.length) === true && (
+          <div className="page">
+            <div className="bottom-middle">
+              <button
+                className={`btn${pageNumber === 1 ? " disabled" : ""}`}
+                onClick={(e) => {
+                  scroll("top")(e);
+                  setPageNumber(pageNumber - 1);
+                }}
+                disabled={pageNumber === 1}
+              >
+                Previous
+              </button>
+              <span> Page {pageNumber}</span>
+              <button
+                className={`btn${cars.length < limit || end ? " disabled" : ""}`}
+                onClick={(e) => {
+                  scroll("top")(e);
+                  setPageNumber(pageNumber + 1);
+                }}
+                disabled={cars.length < limit && end}
+              >
+                Next
+              </button>
+            </div>
 
-          <div onClick={scroll("top")} className="arrows-up">
-            <div className="arrow-up"></div>
-            <div className="arrow-up"></div>
-            <div className="arrow-up"></div>
+            <div onClick={scroll("top")} className="arrows-up">
+              <div className="arrow-up"></div>
+              <div className="arrow-up"></div>
+              <div className="arrow-up"></div>
+            </div>
           </div>
-        </div>)}
+        )}
       </div>
     </div>
   );
