@@ -11,7 +11,7 @@ import { transform } from "lodash";
 import { BiIdCard } from "react-icons/bi";
 
 // eslint-disable-next-line react/prop-types
-export default function CarCard({ outOfStockMessage,refreshPage, bigImage, setImagesLength, currentImageIndex, setCurrentImageIndex, image, removeId, setCarId, carId, deletMarket, deletSold, id, isit, guest, car }) {
+export default function CarCard({changeOwner, outOfStockMessage,refreshPage, bigImage, setImagesLength, currentImageIndex, setCurrentImageIndex, image, removeId, setCarId, carId, deletMarket, deletSold, id, isit, guest, car }) {
   id = parseInt(id)
 
   const [purchased, setPurchased] = useState(false);
@@ -120,11 +120,11 @@ export default function CarCard({ outOfStockMessage,refreshPage, bigImage, setIm
 
       })
       .catch((err) => {
-        // console.log(err)
+        console.log(err)
         if (err.response?.data?.message === "This car is out of stock") {
           outOfStockMessage(true)
           setOutOfStock(true)
-          car.owner_id=err.response.data.ownerId
+          changeOwner(err.response.data.id,err.response.data.ownerId)
         }
       });
   };

@@ -261,7 +261,7 @@
   border-top: 8px solid hsla(200, 100%, 50%);
   border-radius:50% ;
   animation: spin 1s linear infinite;
-
+ 
 }
 
 @keyframes spin{
@@ -721,12 +721,11 @@ front .model-clicked li:last-child {
 }
 
 .checkbox-container input[type="checkbox"],
-.custom-checkbox {}
 
 .custom-checkbox {
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: 10px;
+  height: 10px;
   background-color: #fff;
   border: 2px solid #007bff;
   caret-color: transparent;
