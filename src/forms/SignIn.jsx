@@ -45,7 +45,7 @@ export default function SignInForm({ dealer, guest, id, username }) {
           console.log(err);
           if (err.response?.data === "wrong password") {
             setError((current) => {
-              return { ...current, password: "Wrong password !" };
+              return { ...current, password: "Wrong password!" };
             });
           } else if (err.response?.data === "wrong email") {
             console.log('got here')
@@ -69,7 +69,7 @@ export default function SignInForm({ dealer, guest, id, username }) {
 
     setError((current) => {
       if (signIn.email.length === 0) {
-        return { ...current, email: "Enter your email !" };
+        return { ...current, email: "Enter your email!" };
       } else if (!signIn.email.includes("@")) {
         return { ...current, email: "Invalid form of email !" };
       } else {
@@ -79,9 +79,9 @@ export default function SignInForm({ dealer, guest, id, username }) {
 
     setError((current) => {
       if (signIn.password.length === 0) {
-        return { ...current, password: "Enter your password !" };
+        return { ...current, password: "Enter your password!" };
       } else if (signIn.password.length < 8) {
-        return { ...current, password: "Minimum 8 characters !" };
+        return { ...current, password: "Minimum 8 characters!" };
       } else {
         return { ...current, password: "Stabil" };
       }
@@ -123,7 +123,7 @@ export default function SignInForm({ dealer, guest, id, username }) {
       if (signIn.password.length === 0) {
         return { ...current, password: "Stabil" };
       } else if (signIn.password.length < 8) {
-        return { ...current, password: " Minimum 8 characters !" };
+        return { ...current, password: " Minimum 8 characters!" };
       } else {
         return { ...current, password: "Correct form" };
       }
@@ -233,8 +233,8 @@ x
       case backendMessage:
         return "prezantimi-register";
 
-      case error.email === "Wrong email !" ||
-        error.email === "Enter your email !" ||
+      case error.email === "Wrong email!" ||
+        error.email === "Enter your email!" ||
         error.email === "Invalid form of email !":
         return "wrong-prezantimi-register";
 
@@ -254,12 +254,12 @@ x
       case backendMessage:
         return "prezantimi-register";
 
-      case error.password === "Wrong password !" ||
-        error.password === "Enter your password !" ||
-        error.password === "Minimum 8 characters !":
+      case error.password === "Wrong password!" ||
+        error.password === "Enter your password!" ||
+        error.password === "Minimum 8 characters!":
         return "wrong-prezantimi-register";
 
-      case error.password === " Minimum 8 characters !":
+      case error.password === " Minimum 8 characters!":
         return "half-good-prezantimi";
 
       case error.password === "Correct" || error.password === "Correct form":

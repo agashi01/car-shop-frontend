@@ -81,24 +81,24 @@ export default function CarCard({
 
   useEffect(() => {
     if (!imageContainer.current || !images.length) return;
-    let max = 0;
-    const dimensions = images.map((image) => {
-      const containerWidth = imageContainer.current.offsetWidth;
-      const containerHeight = imageContainer.current.offsetHeight;
+    // let max = 0;
+    // const dimensions = images.map((image) => {
+      // const containerWidth = imageContainer.current.offsetWidth;
+      // const containerHeight = imageContainer.current.offsetHeight;
 
-      const scaleFactor = Math.min(containerWidth / image.width, containerHeight / image.height);
+    //   const scaleFactor = Math.min(containerWidth / image.width, containerHeight / image.height);
 
-      const scaledWidth = image.width * scaleFactor;
-      if (max === 0 || scaledWidth < max) {
-        max = scaledWidth;
-      }
-      const scaledHeight = image.height * scaleFactor;
+    //   const scaledWidth = image.width * scaleFactor;
+    //   if (max === 0 || scaledWidth < max) {
+    //     max = scaledWidth;
+    //   }
+    //   const scaledHeight = image.height * scaleFactor;
 
-      return [scaledHeight, scaledWidth];
-    });
+    //   return [scaledHeight, scaledWidth];
+    // });
 
-    setImageDimensions(dimensions);
-    setCardWidth(max);
+    setImageDimensions([imageContainer.current.offsetHeight,imageContainer.current.offsetWidth]);
+    // setCardWidth(max);
   }, [runIMagesEffect, images, refreshPage]);
 
   const axiosInstance = useAxiosInstance();
@@ -196,7 +196,7 @@ export default function CarCard({
    (
       <div
         onClick={() => setFlip(!flip)}
-        style={cardWidth !== null ? { width: `${cardWidth}px` } : {}}
+        // style={cardWidth !== null ? { width: `${cardWidth}px` } : {}}
         className={flip ? "car-card flip" : "car-card"}
       >
         <div className="front">
@@ -217,10 +217,10 @@ export default function CarCard({
             ) : (
               <div className={`image-container ${isSliding ? "sliding" : ""}`}>
                 <img
-                  style={
-                    imageDimensions.length > 0 && !isNaN(imageDimensions[current][0]) && !isNaN(imageDimensions[current][1])? { height: imageDimensions[current][0], width: imageDimensions[current][1] }
-                      : {}
-                  }
+                  // style={
+                  //   imageDimensions.length > 0 && !isNaN(imageDimensions[current][0]) && !isNaN(imageDimensions[current][1])? { height: imageDimensions[current][0], width: imageDimensions[current][1] }
+                  //     : {}
+                  // }
                   className={`carcard-image`}
                   src={images[current]?.src}
                 />

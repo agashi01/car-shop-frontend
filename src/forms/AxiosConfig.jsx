@@ -77,6 +77,9 @@ export const axiosInstance = () => {
               setAuthMessage('Who are you? Please refresh the page and log in again!');
             } else if (err.response?.data === 'Token has expired') {
               setAuthMessage('Unable to refresh token, please refresh the page and log in again');
+            } else if(errMessage==="you dont have a token in authorization"){
+              setAuthMessage('Who are you? Please log in again!');
+              return Promise.reject(error);
             } else {
               setAuthMessage('Something went wrong, please refresh the page and log in again');
             }
@@ -86,10 +89,13 @@ export const axiosInstance = () => {
           original._retry += 1;
           setAuthMessage('Who are you? Please log in again!');
           return Promise.reject(error);
-        }else if( errMessage-'Token verification failed'){
+        }else if( errMessage==='Token verification failed'){
           original._retry += 1;
         setAuthMessage('Something went wrong, can you please refresh the page and log in again!');
         return Promise.reject(error);
+        }else if(errMessage==="you dont have a token in authorization"){
+          setAuthMessage('Who are you? Please log in again!');
+          return Promise.reject(error);
         }
        
         return Promise.reject(error);
