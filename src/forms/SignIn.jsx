@@ -31,8 +31,8 @@ export default function SignInForm({ dealer, guest, id, username }) {
           password: signIn.password,
         })
         .then((res) => {
-          localStorage.setItem("token", res.data.token);
-          localStorage.setItem("refreshToken", res.data.refresh);
+          localStorage.setItem("token", res.data?.token);
+          localStorage.setItem("refreshToken", res.data?.refresh);
           setBackendError(false);
           setError({ email: "stabil", password: "stabil" });
           dealer(res.data?.user?.type);
@@ -48,8 +48,9 @@ export default function SignInForm({ dealer, guest, id, username }) {
               return { ...current, password: "Wrong password !" };
             });
           } else if (err.response?.data === "wrong email") {
+            console.log('got here')
             setError((current) => {
-              return { ...current, email: "This email do not have a registered account !" };
+              return { ...current, email: "wrong email!" };
             });
           } else {
             setBackendMessage(err?.response?.data);
@@ -179,21 +180,21 @@ export default function SignInForm({ dealer, guest, id, username }) {
     switch (true) {
       case backendMessage:
         return null;
-      case error.email === "Wrong email !":
+      case error.email === "wrong email!":
         return <p className="wrong-sign-in">{error.email}</p>;
 
-      case error.email === "Enter your email !":
+      case error.email === "Enter your email!":
         return <p className="wrong-sign-in">{error.email}</p>;
 
-      case error.email === "Invalid form of email !":
+      case error.email === "Invalid form of email!":
         return <p className="wrong-sign-in">{error.email}</p>;
 
-      case error.email === " Invalid form of email !":
+      case error.email === " Invalid form of email!":
         return <p className="half-good-sign-in">{error.email}</p>;
 
       case error.email === "Correct" || error.email === "Correct form":
         return <p className="good-sign-in">{error.email}</p>;
-
+x
       default:
         return null;
     }
@@ -202,21 +203,19 @@ export default function SignInForm({ dealer, guest, id, username }) {
   const errorPassword = () => {
     switch (true) {
       case backendMessage:
-        console.log(backendMessage);
         return <p className="wrong-sign-in">{backendMessage}</p>;
 
-      case error.password === "Wrong password !":
+      case error.password === "Wrong password!":
         return <p className="wrong-sign-in">{error.password}</p>;
 
-      case error.password === "Minimum 8 characters !":
+      case error.password === "Minimum 8 characters!":
         return <p className="wrong-sign-in">{error.password}</p>;
 
-      case error.password === " Minimum 8 characters !":
+      case error.password === " Minimum 8 characters!":
         return <p className="half-good-sign-in">{error.password}</p>;
 
-      case error.password === "Enter your password !":
+      case error.password === "Enter your password!":
         return <p className="wrong-sign-in">{error.password}</p>;
-
       case error.password === "Correct":
         return <p className="good-sign-in">{error.password}</p>;
 

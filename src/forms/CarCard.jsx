@@ -55,10 +55,8 @@ export default function CarCard({
 
   useEffect(() => {
     if (currentImageIndex != null && currentImageIndex !== current) {
-      console.log("car", carId, car.id);
       if (carId === car.id) {
         setCurrent(currentImageIndex);
-        console.log("URL", images[currentImageIndex]);
         image(images[currentImageIndex] && images[currentImageIndex]);
       }
     }
@@ -82,10 +80,8 @@ export default function CarCard({
   }, []);
 
   useEffect(() => {
-    console.log('hi')
     if (!imageContainer.current || !images.length) return;
     let max = 0;
-    console.log('bsifbesbfi')
     const dimensions = images.map((image) => {
       const containerWidth = imageContainer.current.offsetWidth;
       const containerHeight = imageContainer.current.offsetHeight;
@@ -100,7 +96,7 @@ export default function CarCard({
 
       return [scaledHeight, scaledWidth];
     });
-    console.log(max)
+
     setImageDimensions(dimensions);
     setCardWidth(max);
   }, [runIMagesEffect, images, refreshPage]);
@@ -197,7 +193,7 @@ export default function CarCard({
   };
   return (
     // eslint-disable-next-line react/prop-types
-    cardWidth !== 2 && (
+   (
       <div
         onClick={() => setFlip(!flip)}
         style={cardWidth !== null ? { width: `${cardWidth}px` } : {}}
@@ -222,8 +218,7 @@ export default function CarCard({
               <div className={`image-container ${isSliding ? "sliding" : ""}`}>
                 <img
                   style={
-                    imageDimensions.length > 0
-                      ? { height: imageDimensions[current][0], width: imageDimensions[current][1] }
+                    imageDimensions.length > 0 && !isNaN(imageDimensions[current][0]) && !isNaN(imageDimensions[current][1])? { height: imageDimensions[current][0], width: imageDimensions[current][1] }
                       : {}
                   }
                   className={`carcard-image`}

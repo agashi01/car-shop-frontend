@@ -39,11 +39,11 @@ export const axiosInstance = () => {
             },
             (error)=>{
                 const errMessage=error.response?.message
-
-                if(errMessage.success && errMessage.success===false){
+                if(errMessage && errMessage.success===false){
                     setAuthMessage('Something went wrong, please refresh the page and log in again');
                     throw new axios.Cancel("request canceled because of the big error")
                   }
+                  return Promise.reject(error)
             }
         )
 

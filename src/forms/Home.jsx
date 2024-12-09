@@ -4,6 +4,7 @@ import carLogo from "../car_logo.png";
 import debounce from "lodash/debounce";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance as useAxiosInstance } from "./AxiosConfig";
+import { truncate } from "lodash";
 
 // eslint-disable-next-line react/prop-types
 function Home({ refreshPage, auth, guest, id, dealer, username }) {
@@ -98,13 +99,13 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
     if (carId) {
       axiosInstance.delete("/cars", { params: { id: carId } }).then(() => {
         setRemoveId(carId);
+        if (counter < 2) {
+          setCounter(counter + 1);
+          setDeletSold(true);
+        }
       });
     } else {
-      if (counter < 2) {
-        console.log('hi')
-        setCounter(counter + 1);
-        setDeletSold(false);
-      }
+      
     }
   }, [deletSold]);
 
@@ -282,20 +283,15 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
       };
       try {
         const res = await axiosInstance.get(url, { params });
-        let time;
+        console.log(res)
         if (!res.data[1].length) {
-          time = setTimeout(() => {
-            if (res.data[1].length) {
-              setNoCars(false);
-            }
-          }, 3000);
+              setNoCars(true);
         } else {
           setNoCars(false);
         }
-
-        if(res.data[1].length){
-          clearTimeout(time)
-        }
+        // if(res.data[1].length){
+        //   clearTimeout(time)
+        // }
         setCars(res.data[1]);
         setEnd(res.data[0]);
       } catch (err) {
@@ -397,7 +393,6 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
   };
 
   const scroll = (direction) => () => {
-    console.log("hi");
     let position = direction === "bottom" ? document.body.scrollHeight : 0;
     window.scrollTo({
       top: position,
@@ -423,13 +418,11 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
   };
 
   const prevImage = () => {
-    console.log(currentImageIndex, image.src);
     const prev = (currentImageIndex + imagesLength - 1) % imagesLength;
     setCurrentImageIndex(prev);
   };
 
   const nextImage = () => {
-    console.log(cars);
     const next = (currentImageIndex + 1) % imagesLength;
     setCurrentImageIndex(next);
   };
@@ -571,8 +564,9 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
                 {vehicleInput.map((obj) => {
                   // eslint-disable-next-line react/jsx-key
                   return (
-                    <li key={obj.id} onClick={checked(obj)} className="type-input">
+                    <li key={obj.id} className="type-input">
                       <input
+                       onChange={checked(obj)}
                         type="checkbox"
                         className="custom-checkbox"
                         checked={obj.checked}
@@ -596,8 +590,9 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
                 ) : null}
                 {modelInput.map((obj) => {
                   return (
-                    <li key={obj.id} onClick={checkedM(obj)} className="type-input">
+                    <li key={obj.id}  className="type-input">
                       <input
+                      onChange={checkedM(obj)}
                         type="checkbox"
                         className="custom-checkbox"
                         checked={obj.checked}
@@ -694,8 +689,9 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
                   ) : null}
 
                   {vehicleInput.map((obj) => (
-                    <li key={obj.id} onClick={checked(obj)} className="type-input">
+                    <li key={obj.id}  className="type-input">
                       <input
+                      onChange={checked(obj)}
                         type="checkbox"
                         className="custom-checkbox"
                         checked={obj.checked}
@@ -719,9 +715,10 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
                   ) : null}
                   {modelInput.map((obj) => {
                     return (
-                      <li key={obj.id} onClick={checkedM(obj)} className="type-input">
+                      <li key={obj.id}  className="type-input">
                         <input
                           type="checkbox"
+                          onChange={checkedM(obj)}
                           className="custom-checkbox"
                           checked={obj.checked}
                           id={`input-${obj.model}`}
@@ -808,8 +805,9 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
                 ) : null}
 
                 {vehicleInput.map((obj) => (
-                  <li key={obj.id} onClick={checked(obj)} className="type-input">
+                  <li key={obj.id}  className="type-input">
                     <input
+                    onChange={checked(obj)}
                       type="checkbox"
                       className="custom-checkbox"
                       checked={obj.checked}
@@ -833,8 +831,9 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
                 ) : null}
                 {modelInput.map((obj) => {
                   return (
-                    <li key={obj.id} onClick={checkedM(obj)} className="type-input">
+                    <li key={obj.id}  className="type-input">
                       <input
+                      onChange={checkedM(obj)}
                         type="checkbox"
                         className="custom-checkbox"
                         checked={obj.checked}
@@ -982,8 +981,7 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
             </div>
           ) : null}
 
-          {!noCars &&
-            Boolean(cars.length) == true &&
+          {
             (dealer === "Selling" ? (
               <div className="scroll-bottom">
                 <button
@@ -1017,15 +1015,14 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
               </div>
             ) : null)}
         </div>
-        {noCars ? (
+        {/* {noCars ? (
           <div style={{ alignSelf: "center" }}>Unfortunately there are no cars available!</div>
         ) : !cars.length ? (
           <div style={{ alignSelf: "center" }} className="loading"></div>
-        ) : (
+        ) : ( */}
           <div className="cars-page">
             <ul className="cars-ul">
               {cars.map((car) => {
-                // console.log(car.id)
                 return (
                   // eslint-disable-next-line react/jsx-key
                   <li key={car.id}>
@@ -1052,7 +1049,7 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
               })}
             </ul>
           </div>
-        )}
+        
 
         {!noCars && Boolean(cars.length) === true && (
           <div className="page">
