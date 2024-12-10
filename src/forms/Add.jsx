@@ -191,7 +191,10 @@ export default function Add({ id }) {
           "Content-Type": "multipart/form-data",
         },
       })
-      .then(() => {
+      .then((res) => {
+        if(res.data==='success')
+          console.log('success')
+        return;
         clearTimeout(timeout)
         setToMuchTime(false)
         setLoading(false);

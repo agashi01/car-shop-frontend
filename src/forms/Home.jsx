@@ -259,7 +259,6 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
       try {
         const res = await axiosInstance.get(url, { params });
         if (!res.data[1].length) {
-          console.log("gj");
           setNoCars(true);
         } else {
           setNoCars(false);
