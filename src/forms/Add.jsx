@@ -192,9 +192,7 @@ export default function Add({ id }) {
         },
       })
       .then((res) => {
-        if(res.data==='success')
-          console.log('success')
-        return;
+        console.log(res)
         clearTimeout(timeout)
         setToMuchTime(false)
         setLoading(false);

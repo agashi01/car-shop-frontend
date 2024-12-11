@@ -976,7 +976,8 @@ input[type="checkbox"] {
 }
 
 .sell.ul {
-  margin: 0 ;
+
+  margin-left: 20px ;
   width: 200px;
   padding: 20px;
 }

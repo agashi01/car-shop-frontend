@@ -29,7 +29,6 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
   const [removeId, setRemoveId] = useState(null);
   const [end, setEnd] = useState(false);
   const [num, setNum] = useState(0);
-  const [counter, setCounter] = useState(0);
   const [image, setImage] = useState(null);
   const [imagesLength, setImagesLength] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(null);
@@ -258,18 +257,21 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
       };
       try {
         const res = await axiosInstance.get(url, { params });
-        if (!res.data[1].length) {
-          setNoCars(true);
-        } else {
-          setNoCars(false);
-        }
+        console.log(res);
+          if (!res.data[1].length) {
+            setNoCars(true);
+          } else {
+            setNoCars(false);
+            setCars(res.data[1]);
+            setEnd(res.data[0]);
+          }
+        
         // if(res.data[1].length){
         //   clearTimeout(time)
         // }
-        setCars(res.data[1]);
-        setEnd(res.data[0]);
       } catch (err) {
         console.log(err, "err");
+        setNoCars(true)
       }
     };
 
@@ -464,6 +466,12 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
       });
     });
   };
+
+  useEffect(()=>{
+    console.log(noCars,'no')
+  }
+
+  ,[])
 
   return (
     <div className="complet">
@@ -1019,6 +1027,7 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
               </button>
 
               <div onClick={scroll("bottom")} className="arrows">
+                
                 <div className="arrow"></div>
                 <div className="arrow"></div>
                 <div className="arrow"></div>
@@ -1042,7 +1051,7 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
                 <div className="arrow"></div>
               </div>
             </div>
-          ) : guest && (!noCars || Boolean(cars.length) === true) ? (
+          ) : guest && (!noCars && !!cars.length) ? (
             <div className="scroll-bottom buying-guest">
               <div onClick={scroll("bottom")} className="arrows">
                 <div className="arrow"></div>
