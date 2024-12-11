@@ -80,7 +80,6 @@ export default function CarCard({
   }, []);
 
   useEffect(() => {
-    console.log("hi");
     if (!imageContainer.current || !images.length) return;
     // let max = 0;
     // const dimensions = images.map((image) => {
