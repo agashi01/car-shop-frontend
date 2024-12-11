@@ -8,7 +8,7 @@ export const axiosInstance = () => {
 
   const axiosInstance2 = useMemo(() => {
     const instance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: "https://car-shop-backend-agashi01.onrender.com",
     });
 
     return instance;
@@ -45,29 +45,29 @@ export const axiosInstance = () => {
       async (error) => {
         const original = error.config;
         const errMessage = error.response?.data;
-        if(errMessage.success===false){
+        if (errMessage.success === false) {
           setAuthMessage('Something went wrong, please refresh the page and log in again');
           throw new axios.Cancel('request canceled because of the big Error')
         }
-  
+
         if (!original._retry) {
           original._retry = 0;
         }
-  
+
         if (original._retry < 1 && errMessage === "Token has expired") {
           original._retry += 1;
-  
+
           try {
             const refreshToken = localStorage.getItem("refreshToken");
-  
+
             const response = await axios.post("http://localhost:4000/token", { refreshToken });
-  
+
             const newToken = response.data;
             localStorage.setItem('token', newToken);
-  
+
 
             original.headers['Authorization'] = `Bearer ${newToken}`;
-  
+
 
             return axiosInstance2(original);
           } catch (err) {
@@ -77,7 +77,7 @@ export const axiosInstance = () => {
               setAuthMessage('Who are you? Please refresh the page and log in again!');
             } else if (err.response?.data === 'Token has expired') {
               setAuthMessage('Unable to refresh token, please refresh the page and log in again');
-            } else if(errMessage==="you dont have a token in authorization"){
+            } else if (errMessage === "you dont have a token in authorization") {
               setAuthMessage('Who are you? Please log in again!');
               return Promise.reject(error);
             } else {
@@ -89,24 +89,24 @@ export const axiosInstance = () => {
           original._retry += 1;
           setAuthMessage('Who are you? Please log in again!');
           return Promise.reject(error);
-        }else if( errMessage==='Token verification failed'){
+        } else if (errMessage === 'Token verification failed') {
           original._retry += 1;
-        setAuthMessage('Something went wrong, can you please refresh the page and log in again!');
-        return Promise.reject(error);
-        }else if(errMessage==="you dont have a token in authorization"){
+          setAuthMessage('Something went wrong, can you please refresh the page and log in again!');
+          return Promise.reject(error);
+        } else if (errMessage === "you dont have a token in authorization") {
           setAuthMessage('Who are you? Please log in again!');
           return Promise.reject(error);
         }
-       
+
         return Promise.reject(error);
       }
     );
-  
+
     return () => {
       axiosInstance2.interceptors.response.eject(responseInterceptor);
     }
   }, []);
-  
+
 
 
 

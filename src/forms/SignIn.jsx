@@ -194,7 +194,7 @@ export default function SignInForm({ dealer, guest, id, username }) {
 
       case error.email === "Correct" || error.email === "Correct form":
         return <p className="good-sign-in">{error.email}</p>;
-x
+
       default:
         return null;
     }

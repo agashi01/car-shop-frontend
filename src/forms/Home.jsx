@@ -4,7 +4,7 @@ import carLogo from "../car_logo.png";
 import debounce from "lodash/debounce";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance as useAxiosInstance } from "./AxiosConfig";
-import { BsArrowDown } from "react-icons/bs";
+// import { BsArrowDown } from "react-icons/bs";
 // import { truncate } from "lodash";
 
 // eslint-disable-next-line react/prop-types
