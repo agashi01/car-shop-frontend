@@ -48,7 +48,6 @@ export default function SignInForm({ dealer, guest, id, username }) {
               return { ...current, password: "Wrong password!" };
             });
           } else if (err.response?.data === "wrong email") {
-            console.log('got here')
             setError((current) => {
               return { ...current, email: "wrong email!" };
             });

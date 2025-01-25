@@ -26,7 +26,7 @@ export default function AuthMessage({authMessage,auth}){
                   Log In
                 </button>
               </>
-            ) : authMessage === "Who are you? Please log in again!" ? (
+            ) : authMessage === "Who are you? Can You please log in again!" ? (
               <>
                 <p className="">{authMessage}</p>
                 <button onClick={auth} className="btn2">
@@ -34,7 +34,7 @@ export default function AuthMessage({authMessage,auth}){
                 </button>
               </>
             ) : authMessage ===
-              "Something went wrong, can you please refresh the page and log in again!" ? (
+              "Something went wrong, can You please log in again!" ? (
               <>
                 <p className="">{authMessage}</p>
                 <button onClick={auth} className="btn2">
@@ -43,7 +43,7 @@ export default function AuthMessage({authMessage,auth}){
               </>
             ) : authMessage ? (
               <>
-                <p className="">Something went wrong, please log in again!</p>
+                <p className="">Something went wrong, can You please log in again!</p>
                 <button onClick={auth} className="btn2">
                   Log In
                 </button>

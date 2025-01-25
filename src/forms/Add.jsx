@@ -191,8 +191,7 @@ export default function Add({ id }) {
           "Content-Type": "multipart/form-data",
         },
       })
-      .then((res) => {
-        console.log(res)
+      .then(() => {
         clearTimeout(timeout)
         setToMuchTime(false)
         setLoading(false);
@@ -203,7 +202,7 @@ export default function Add({ id }) {
         clearTimeout(timeout)
         setToMuchTime(false)
         setLoading(false);
-        console.log(err, 'hi');
+        console.log(err);
         if (typeof err.response.data !== 'string') {
           setErrorMessage('Problems in te server')
           setUnavailable(false);

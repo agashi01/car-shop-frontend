@@ -45,8 +45,8 @@ export const axiosInstance = () => {
       async (error) => {
         const original = error.config;
         const errMessage = error.response?.data;
-        if (errMessage.success === false) {
-          setAuthMessage('Something went wrong, please refresh the page and log in again');
+                if (errMessage && errMessage.success === false) {
+          setAuthMessage('Something went wrong, can You please log in again');
           throw new axios.Cancel('request canceled because of the big Error')
         }
 
@@ -78,23 +78,23 @@ export const axiosInstance = () => {
             } else if (err.response?.data === 'Token has expired') {
               setAuthMessage('Unable to refresh token, please refresh the page and log in again');
             } else if (errMessage === "you dont have a token in authorization") {
-              setAuthMessage('Who are you? Please log in again!');
+              setAuthMessage('Who are you? Can You please log in again!');
               return Promise.reject(error);
             } else {
-              setAuthMessage('Something went wrong, please refresh the page and log in again');
+              setAuthMessage('Something went wrong, can You please log in again');
             }
             return Promise.reject(err);
           }
         } else if (original._retry < 1 && errMessage === 'Invalid token') {
           original._retry += 1;
-          setAuthMessage('Who are you? Please log in again!');
+          setAuthMessage('Who are you? Can You please log in again!');
           return Promise.reject(error);
         } else if (errMessage === 'Token verification failed') {
           original._retry += 1;
-          setAuthMessage('Something went wrong, can you please refresh the page and log in again!');
+          setAuthMessage('Something went wrong, can You please log in again!');
           return Promise.reject(error);
         } else if (errMessage === "you dont have a token in authorization") {
-          setAuthMessage('Who are you? Please log in again!');
+          setAuthMessage('Who are you? Can You please log in again!');
           return Promise.reject(error);
         }
 

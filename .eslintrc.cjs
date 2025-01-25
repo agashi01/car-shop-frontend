@@ -1,6 +1,10 @@
 module.exports = {
   root: true,
-  env: { browser: true, es2020: true },
+  env: { 
+    browser: true, 
+    es2020: true,
+    node: true // Add node environment to recognize Node.js globals like process
+  },
   extends: [
     "eslint:recommended",
     "plugin:react/recommended",

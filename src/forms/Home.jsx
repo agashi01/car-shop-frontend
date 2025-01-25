@@ -37,7 +37,7 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
   const [counter, setCounter] = useState(0)
 
   const account = useRef(null);
-
+  
   const [checkboxStates, setCheckboxStates] = useState(() => {
     if (localStorage.getItem("checkboxStates")) {
       return JSON.parse(localStorage.getItem("checkboxStates"));
@@ -258,10 +258,8 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
       };
       try {
         const res = await axiosInstance.get(url, { params });
-        console.log(res)
         if (!res.data[1].length) {
           if (counter > 0) {
-            console.log(counter,'sgseg')
             setNoCars(true);
           }
           setCounter(counter + 1)
@@ -277,7 +275,7 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
         //   clearTimeout(time)
         // }
       } catch (err) {
-        console.log(err, "err");
+        console.log(err);
         setNoCars(true)
       }
     };
@@ -376,9 +374,7 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
   };
 
   const scroll = (direction, updatePage) => () => {
-    console.log("hi");
     let position = direction === "bottom" ? document.body.scrollHeight : 0;
-    console.log(position);
     window.scrollTo({
       top: position,
       behavior: "smooth",
@@ -427,7 +423,6 @@ function Home({ refreshPage, auth, guest, id, dealer, username }) {
   };
 
   const nextImage = () => {
-    console.log("gi");
     const next = (currentImageIndex + 1) % imagesLength;
     setCurrentImageIndex(next);
   };
