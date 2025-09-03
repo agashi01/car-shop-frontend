@@ -1,8 +1,6 @@
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+In the box of the register form, add the following style:
+display: flex; flex-direction: column; justify-content: center; align-items: center;.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+In the sign-in form box, there is an issue where the error or warning under the email field does not get displayed. This happens because the backend message prevents the error from showing under the email. The error occurs due to the effect hook making an Axios request that returns an error because the database is not set up.
