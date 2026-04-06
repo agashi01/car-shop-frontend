@@ -417,7 +417,7 @@ export default function Add({ id }) {
               </select>
             </div>
             <div className="image-input">
-              <p className="text3">Image</p>
+              <p className="text3">Image (features AI Detection)</p>
               <label htmlFor="files" className={`input-sell image ${message.file}`}>
                 Choose Files
                 <input

@@ -16,7 +16,7 @@ export default function Register() {
   const email = useRef(null);
   const password = useRef(null);
   const axiosInstance = useAxiosInstance();
-  const navigate=useNavigate()
+  const navigate = useNavigate()
 
   const [backendError, setBackendError] = useState();
   const [backendMessage, setBackendMessage] = useState();
@@ -473,7 +473,9 @@ export default function Register() {
   };
 
   return (
-    <div className="div-box">
+    <div className="div-box" style={{
+      display: flex, flexDirection: column, justifyContent: center, alignItems: center
+    }}>
       <form id="register" onSubmit={registerConfirm}>
         <h2>Register</h2>
         <label htmlFor="emri">
@@ -544,7 +546,7 @@ export default function Register() {
           <div className="next-to-select">
             <label htmlFor="user-type"></label>
             <select
-            style={{cursor:'pointer'}}
+              style={{ cursor: 'pointer' }}
               onChange={(e) => setType(e.target.value)}
               className="select"
               name="user-type"

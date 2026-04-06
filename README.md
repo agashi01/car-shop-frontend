@@ -1,4 +1,4 @@
-# React + Vite
+# Car Shop
 
 In the box of the register form, add the following style:
 display: flex; flex-direction: column; justify-content: center; align-items: center;.
